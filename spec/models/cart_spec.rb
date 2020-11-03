@@ -39,7 +39,17 @@ RSpec.describe Cart, type: :model do
 
       expect(cart.total_price).to be 700
     end
-    it "特別活動可能可搭配折扣（例如聖誕節的時候全面打 9 折，或是滿額滿千送百）"
+    it "特別活動可能可搭配折扣（例如聖誕節的時候全面打 9 折，或是滿額滿千送百）" do
+      cart = Cart.new
+      p1 = Product.create(title: "iPhone", price: "100")
+      p2 = Product.create(title: "iPad", price: "200")
+
+      3.times { cart.add_item(p1.id) }
+      10.times { cart.add_item(p2.id) }
+
+      expect(cart.total_price("xmas")).to be 2300 * 0.9
+      expect(cart.total_price).to be 2100
+    end
   end
 
   describe "購物車進階功能" do

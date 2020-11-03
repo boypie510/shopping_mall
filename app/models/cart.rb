@@ -19,8 +19,17 @@ class Cart
     @items.empty?
   end
 
-  def total_price
-    @items.reduce(0) { |total_price, item| total_price + item.price }
+  def total_price(discount = 1)
+    total_price = @items.reduce(0) { |total_price, item| total_price + item.price }
+    if discount == "xmas"
+      ratio = 0.9
+    elsif (total_price / 1000) >= 1
+      total_price = total_price - 100 * (total_price / 1000)
+      ratio = 1
+    else 
+      ratio = 1
+    end
+    discount_price = total_price * ratio
   end
 
   def serialize
