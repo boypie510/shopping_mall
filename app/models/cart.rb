@@ -1,8 +1,8 @@
 class Cart
   attr_reader :items
 
-  def initialize
-    @items = []
+  def initialize(items = [])
+    @items = items
   end
 
   def add_item(product_id)
@@ -20,14 +20,24 @@ class Cart
   end
 
   def total_price
-    @items.reduce(0) {|total_price, item| total_price + item.price}
+    @items.reduce(0) { |total_price, item| total_price + item.price }
   end
 
   def serialize
     all_items = items.map { |item| 
       {"product_id" => item.product_id, "quantity" => item.quantity}
     }
-    
+
     { "items" => all_items }
+  end
+
+  def self.from_hash(hash)
+    if hash.nil?
+      new []
+    else
+      new hash["items"].map { |item_hash|
+        CartItem.new(item_hash["product_id"], item_hash["quantity"])
+      }
+    end
   end
 end

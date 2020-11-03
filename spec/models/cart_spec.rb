@@ -50,7 +50,14 @@ RSpec.describe Cart, type: :model do
 
       expect(cart.serialize).to eq session_hash
     end
-    it "可以把 Session 的內容（Hash 格式），還原成購物車的內容"
+    it "可以把 Session 的內容（Hash 格式），還原成購物車的內容" do
+      cart = Cart.from_hash(session_hash)
+      
+      expect(cart.items.first.product_id).to be 3
+      expect(cart.items.first.quantity).to be 5
+      expect(cart.items.second.product_id).to be 4
+      expect(cart.items.second.quantity).to be 7
+    end
   end
 
   private
