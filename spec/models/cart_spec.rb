@@ -29,13 +29,37 @@ RSpec.describe Cart, type: :model do
       expect(cart.items.second.product_id).to be p2.id
       expect(cart.items.first.product).to be_a Product
     end
-    it "每個 Cart Item 都可以計算它自己的金額（小計）"
-    it "可以計算整台購物車的總消費金額"
+    it "可以計算整台購物車的總消費金額" do
+      cart = Cart.new
+      p1 = Product.create(title: "iPhone", price: "100")
+      p2 = Product.create(title: "iPad", price: "200")
+
+      3.times { cart.add_item(p1.id) }
+      2.times { cart.add_item(p2.id) }
+
+      expect(cart.total_price).to be 700
+    end
     it "特別活動可能可搭配折扣（例如聖誕節的時候全面打 9 折，或是滿額滿千送百）"
   end
 
   describe "購物車進階功能" do
-    it "可以將購物車內容轉換成 Hash，存到 Session 裡"
+    it "可以將購物車內容轉換成 Hash，存到 Session 裡" do
+      cart = Cart.new
+      5.times { cart.add_item(3) }
+      7.times { cart.add_item(4) }
+
+      expect(cart.serialize).to eq session_hash
+    end
     it "可以把 Session 的內容（Hash 格式），還原成購物車的內容"
+  end
+
+  private
+  def session_hash
+    {
+      "items" => [
+        {"product_id" => 3, "quantity" => 5},
+        {"product_id" => 4, "quantity" => 7}
+      ]
+    }
   end
 end
